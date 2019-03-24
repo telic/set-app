@@ -36,18 +36,42 @@ new Vue({
 		list: [],
 		filter: '',
 	},
+	mounted() {
+		this._style = this.$el.ownerDocument.createElement('style')
+		this._style.textContent = `
+			.app {
+				padding: 1em;
+				background-color: rgb(240, 240, 240);
+			}
+			.app > header {
+				position: sticky;
+				top: 0;
+				z-index: 2;
+				background-color: rgba(240, 240, 240, 0.8);
+				margin: -1em -1em 0;
+				padding: 1em 1em 0;
+				border-bottom: 1px solid transparent; /* contain inner margins */
+			}
+		`
+		this.$el.ownerDocument.head.appendChild(this._style)
+	},
+	beforeDestroy() {
+		this._style.parentElement.removeChild(this._style)
+	},
 	methods: {
 		add(item) {
 			insertSorted(this.list, item)
 		},
 	},
 	template: `
-		<div>
-			<ItemEntry @add="add" @search="filter = $event" />
-			<label style="display:block; text-align:right; font-weight:bold; margin: 0.5em;">
-				Total items: <output>{{ list.length }}</output>
-			</label>
+		<section class="app">
+			<header>
+				<ItemEntry @add="add" @search="filter = $event" />
+				<label style="display:block; text-align:right; font-weight:bold; margin: 0.5em;">
+					Total items: <output>{{ list.length }}</output>
+				</label>
+			</header>
 			<ListView :list="list" />
-		</div>
+		</section>
 	`,
 }).$mount("#app")
