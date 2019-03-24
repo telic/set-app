@@ -3,6 +3,7 @@ import ItemEntry from './ItemEntry.vue.js'
 import ListView from './ListView.vue.js'
 
 import localStorageMixin from './localStorageMixin.js'
+import { debounce } from './util.js'
 
 const compare = Intl.Collator('en', { sensitivity: 'base' }).compare
 
@@ -38,7 +39,7 @@ const animation = {
 	length: 350,
 }
 
-function animateScroll(amount) {
+function animateScroll(amount = (-1 * document.documentElement.scrollTop)) {
 	animation.tween.stop()
 	const to = Math.min(
 		Math.max(0, document.documentElement.scrollTop + amount),
@@ -64,6 +65,9 @@ new Vue({
 	data: {
 		list: [],
 		filter: '',
+	},
+	watch: {
+		filter: debounce(animateScroll, animation.length),
 	},
 	mounted() {
 		this._style = this.$el.ownerDocument.createElement('style')
