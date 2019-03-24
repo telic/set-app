@@ -25,3 +25,14 @@ export function getByKey(context, keyPath) {
 		return context[keyPath]
 	}
 }
+
+export function debounce(fn, rate) {
+	let timeout = null
+	return function() {
+		if (timeout !== null) return
+		else {
+			timeout = setTimeout(() => { timeout = null }, rate)
+			fn()
+		}
+	}
+}
