@@ -35,19 +35,22 @@ const animation = {
 		animation.tween.update(time)
 	},
 	rafId: null,
+	length: 350,
 }
 
 function animateScroll(amount) {
+	animation.tween.stop()
 	const to = Math.min(
 		Math.max(0, document.documentElement.scrollTop + amount),
 		document.documentElement.scrollHeight - window.innerHeight
 	)
-	animation.tween
-		.stop()
-		.to({ scrollTop: to }, 350)
-		.easing(TWEEN.Easing.Quadratic.InOut)
-		.start()
-	animation.rafId = requestAnimationFrame(animation.fn)
+	if (to !== document.documentElement.scrollTop) {
+		animation.tween
+			.to({ scrollTop: to }, animation.length)
+			.easing(TWEEN.Easing.Quadratic.InOut)
+			.start()
+		animation.rafId = requestAnimationFrame(animation.fn)
+	}
 }
 
 new Vue({
