@@ -47,7 +47,7 @@ new Vue({
 			<label style="display:block; text-align:right; font-weight:bold; margin: 0.5em;">
 				Total items: <output>{{ list.length }}</output>
 			</label>
-			<ListView :list="list" class="has-background-white" />
+			<ListView :list="list" />
 		</div>
 	`,
 }).$mount("#app")
