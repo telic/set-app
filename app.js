@@ -113,7 +113,7 @@ new Vue({
 					Total items: <output>{{ list.length }}</output>
 				</label>
 			</header>
-			<ListView :list="list" @enter="handleEnter" />
+			<ListView :list="list" :filter="filter" @enter="handleEnter" />
 		</section>
 	`,
 }).$mount("#app")
