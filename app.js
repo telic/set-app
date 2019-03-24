@@ -24,6 +24,32 @@ function insertSorted(arr, item) {
 	return arr.splice(left, 0, item)
 }
 
+const animation = {
+	tween: (
+		new TWEEN.Tween(document.documentElement)
+			.onStop(() => cancelAnimationFrame(animation.rafId))
+			.onComplete(() => cancelAnimationFrame(animation.rafId))
+	),
+	fn(time) {
+		animation.rafId = requestAnimationFrame(animation.fn)
+		animation.tween.update(time)
+	},
+	rafId: null,
+}
+
+function animateScroll(amount) {
+	const to = Math.min(
+		Math.max(0, document.documentElement.scrollTop + amount),
+		document.documentElement.scrollHeight - window.innerHeight
+	)
+	animation.tween
+		.stop()
+		.to({ scrollTop: to }, 350)
+		.easing(TWEEN.Easing.Quadratic.InOut)
+		.start()
+	animation.rafId = requestAnimationFrame(animation.fn)
+}
+
 new Vue({
 	components: {
 		ItemEntry,
@@ -62,6 +88,19 @@ new Vue({
 		add(item) {
 			insertSorted(this.list, item)
 		},
+		handleEnter(el) {
+			const headHeight = this.$el.firstChild.offsetHeight
+			const rect = el.getBoundingClientRect()
+			const windowHeight = window.innerHeight;
+			const pad = 10
+			if ((rect.y + rect.height) > windowHeight) {
+				// scroll down to bring into view at bottom
+				animateScroll((rect.y + rect.height) - windowHeight + pad)
+			} else if (rect.y < headHeight) {
+				// scroll up to bring into view at top
+				animateScroll(-1 * (headHeight - rect.y + pad))
+			}
+		},
 	},
 	template: `
 		<section class="app">
@@ -71,7 +110,7 @@ new Vue({
 					Total items: <output>{{ list.length }}</output>
 				</label>
 			</header>
-			<ListView :list="list" />
+			<ListView :list="list" @enter="handleEnter" />
 		</section>
 	`,
 }).$mount("#app")

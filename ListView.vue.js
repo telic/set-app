@@ -15,7 +15,7 @@ export default {
 		},
 	},
 	template: `
-		<TransitionGroup tag="ol" class="panel">
+		<TransitionGroup tag="ol" class="panel" @enter="$emit('enter', $event)">
 			<li
 				v-for="(item, i) of list"
 				v-if="passesFilter(item)"
